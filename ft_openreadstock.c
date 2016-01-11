@@ -6,40 +6,59 @@
 /*   By: dyuzan <marvin@42.fr>                      +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2016/01/05 09:05:38 by dyuzan            #+#    #+#             */
-/*   Updated: 2016/01/05 13:26:50 by dyuzan           ###   ########.fr       */
+/*   Updated: 2016/01/11 14:57:43 by dyuzan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <sys/types.h>
-#include <sys/uio.h>
 #include <fcntl.h>
+#include <unistd.h>
 
 #define BUF_SIZE 5555
 
-char		*ft_stock(char *tetriminos)
+void	ft_putchar(char c)
 {
-	int		fd;
-	char	buf[BUF_SIZE];
-	int		ret;
+	write (1, &c, 1);
+}
+
+void	ft_putstr(char *str)
+{
+	while (*str)
+	{
+		ft_putchar(*str++);
+	}
+}
+
+char	*ft_stock(char *tetriminos)
+{
+	int				fd;
+	static char		buf[BUF_SIZE];
+	int				ret;
 
 	fd = open(tetriminos, O_RDONLY);
-	while (ret = read(fd, buf, BUF_SIZE))
+	while ((ret = read(fd, buf, BUF_SIZE)))
 	{
 		buf[ret] = '\0';
 	}
-	close(fd);
 	return (buf);
 }
 
-void	ft_checktetri(void)
+void	ft_check(char *check)
 {
-	char *checkhor;
-
-	checkhor = ft_stock("tetriminos");
-	while (*checkhor)
+	while (*check)
 	{
-
+		if (*check != '.' &&  *check != '#' && *check != '\n')
+		{
+		ft_putstr("ERROR");
+		break;
+		}
+		check++;
 	}
+}
 
 
+int main(int argc, char **argv)
+{
+	if (argc == 2)
+		ft_check(ft_stock(argv[1]));
+	return (0);
 }
